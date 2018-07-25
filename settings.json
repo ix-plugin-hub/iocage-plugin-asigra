@@ -1,0 +1,16 @@
+{
+	"servicerestart":"service XXX restart",
+	"serviceget": "/usr/local/bin/XXXget",
+	"serviceset": "/usr/local/bin/XXXset",
+	"options": {
+		"server": {
+			"type": "string",
+			"description": "XXX Server Hostname / IP"
+		},
+		"password": {
+			"type": "password",
+			"description": "XXX Server Password"
+		}
+
+	}
+}
