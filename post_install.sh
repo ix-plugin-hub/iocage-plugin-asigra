@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DSSYSTEM="dssystem-14.0.txz"
-URL="https://builds.ixsystems.com/~john/asigra/Software/DS-System/FreeBSD"
+URL="https://builds.ixsystems.com/ix-iso/john/asigra/Software/DS-System/FreeBSD"
 
 fetch ${URL}/${DSSYSTEM}
 if [ "$?" != "0" ]; then
