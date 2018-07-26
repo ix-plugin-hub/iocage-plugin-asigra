@@ -2,8 +2,9 @@
 
 DSSYSTEM="dssystem-14.0.txz"
 URL="https://builds.ixsystems.com/ix-iso/john/asigra/Software/DS-System/FreeBSD"
+URL="https://12.189.233.133/ix-iso/john/asigra/Software/DS-System/FreeBSD"
 
-fetch ${URL}/${DSSYSTEM}
+fetch -v ${URL}/${DSSYSTEM}
 if [ "$?" != "0" ]; then
 	echo "ERROR: Failed fetching ${DSSYSTEM}"
 	exit 1
