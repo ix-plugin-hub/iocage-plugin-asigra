@@ -58,7 +58,6 @@ setup_postgresql()
 	pw groupadd -q -n pgsql
 	echo -n 'pgsql' | pw useradd -n pgsql -u 1001 -s /bin/sh -m \
 		-d /usr/local/pgsql -g pgsql -G wheel -c 'Database User' -H 0
-	rm -rf /usr/local/pgsql
 
 	service postgresql initdb
 
@@ -72,7 +71,6 @@ setup_postgresql()
 
 	echo "host all all 127.0.0.0/24 trust" >> /usr/local/pgsql/data/pg_hba.conf
 
-	service postgresql initdb
 	service postgresql start
 }
 
