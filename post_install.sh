@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 setup_inetd()
 {
 	sysrc -f /etc/rc.conf inetd_enable="YES"
@@ -24,6 +23,10 @@ setup_rc_conf()
 	sysrc -if /etc/rc.conf sendmail_msp_queue_enable="NO"
 
 	service sendmail onestop > /dev/null 2>&1
+
+	sysrc -if /etc/rc.conf cloned_interfaces="lo0"
+	sysrc -if /etc/rc.conf ifconfig_lo0="127.0.0.1/8"
+	service netif start lo0
 
 	#sysrc -if /etc/rc.conf sshd_enable="YES"
 }
