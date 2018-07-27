@@ -37,7 +37,7 @@ setup_rc_conf()
 	sysrc -if /etc/rc.conf sendmail_outbound_enable="NO"
 	sysrc -if /etc/rc.conf sendmail_msp_queue_enable="NO"
 
-	service sendmail onestop
+	service sendmail onestop > /dev/null 2>&1
 
 	#sysrc -if /etc/rc.conf sshd_enable="YES"
 }
