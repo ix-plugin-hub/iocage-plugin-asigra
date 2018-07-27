@@ -83,7 +83,7 @@ setup_postgresql()
 		sed -i.bak '/listen_addresses/s/localhost/*/' /usr/local/pgsql/data/postgresql.conf
 	fi
 
-	echo "host\tall\tall\t127.0.0.0/24\ttrust" >> /usr/local/pgsql/data/pg_hba.conf
+	echo "host all all 127.0.0.0/24 trust" >> /usr/local/pgsql/data/pg_hba.conf
 
 	service postgresql initdb
 	service postgresql start
