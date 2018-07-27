@@ -66,6 +66,17 @@ setup_postgresql()
 	sysrc -if /etc/rc.conf postgresql_data="/usr/local/pgsql/data"
 	sysrc -if /etc/rc.conf postgresql_user="pgsql"
 
+	pw groupdel -q -n postgres
+	pw userdel -q -n postgres
+
+	pw groupadd -q -n pgsql
+	echo -n 'pgsql' | pw useradd -n pgsql -u 1001 -s /bin/sh -m \
+		-d /usr/local/pgsql -g pgsql -G wheel -c 'Database User' -H 0
+
+	service postgresql initdb
+
+	chown -R pgsql:pgsql /usr/local/pgsql
+
 	if grep -q '#listen_addresses' /usr/local/pgsql/data/postgresql.conf;
 	then
 		sed -i.bak '/listen_addresses/s/#//' /usr/local/pgsql/data/postgresql.conf
