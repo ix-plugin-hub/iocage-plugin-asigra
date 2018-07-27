@@ -142,6 +142,8 @@ setup_asigra()
 	mkdir /zdata
 
 	pkg add --force ${dssystem}
+
+	service dssystem start
 }
 
 # When PG and DS are different jails, this will do a lot of
