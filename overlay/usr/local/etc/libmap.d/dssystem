@@ -2,3 +2,7 @@
 libpam.so.5	libpam.so.6
 libcrypto.so.7	libcrypto.so.8
 libssl.so.7	libssl.so.8	
+
+libpam.so.6	libpam.so.5
+libcrypto.so.8	libcrypto.so.7
+libssl.so.8	libssl.so.7
