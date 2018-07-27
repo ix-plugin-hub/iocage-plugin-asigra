@@ -137,9 +137,12 @@ setup_asigra()
 	cd /root
 	fetch -v ${url}/${dssystem}
 	if [ "$?" != "0" ]; then
-	echo "ERROR: Failed fetching ${dssystem}"
-	exit 1
+		echo "ERROR: Failed fetching ${dssystem}"
+		exit 1
 	fi
+
+	# In the 2 jail configuration, this is a host dataset shared by the 2 jails
+	mkdir /zdata
 
 	pkg add --force ${dssystem}
 }
