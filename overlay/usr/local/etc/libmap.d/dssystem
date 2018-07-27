@@ -1,3 +1,4 @@
+[/usr/local/ds-system/dssystem_dc]
 libpam.so.5	libpam.so.6
 libcrypto.so.7	libcrypto.so.8
 libssl.so.7	libssl.so.8	
