@@ -150,6 +150,8 @@ setup_ldap()
 # done in PG_main().
 DS_main()
 {
+	echo 'Setting up LDAP'
+	setup_ldap
 }
 
 main()
