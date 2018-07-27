@@ -1,21 +1,6 @@
 #!/bin/sh
 
 
-setup_asigra()
-{
-	local dssystem="dssystem-14.0.txz"
-	local url="https://builds.ixsystems.com/ix-iso/john/asigra/Software/DS-System/FreeBSD"
-
-	cd /root
-	fetch -v ${url}/${dssystem}
-	if [ "$?" != "0" ]; then
-	echo "ERROR: Failed fetching ${dssystem}"
-	exit 1
-	fi
-
-	pkg add ${dssystem}
-}
-
 setup_inetd()
 {
 	sysrc -f /etc/rc.conf inetd_enable="YES"
@@ -141,6 +126,21 @@ setup_ldap()
 	chown root:wheel ${dss_pam}
 
 	service nsswitch restart
+}
+
+setup_asigra()
+{
+	local dssystem="dssystem-14.0.txz"
+	local url="https://builds.ixsystems.com/ix-iso/john/asigra/Software/DS-System/FreeBSD"
+
+	cd /root
+	fetch -v ${url}/${dssystem}
+	if [ "$?" != "0" ]; then
+	echo "ERROR: Failed fetching ${dssystem}"
+	exit 1
+	fi
+
+	pkg add ${dssystem}
 }
 
 # When PG and DS are different jails, this will do a lot of
