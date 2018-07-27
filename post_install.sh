@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-install_asigra()
+setup_asigra()
 {
 	local dssystem="dssystem-14.0.txz"
 	local url="https://builds.ixsystems.com/ix-iso/john/asigra/Software/DS-System/FreeBSD"
@@ -13,7 +13,7 @@ install_asigra()
 	exit 1
 	fi
 
-	#tar -zxvf ${dssystem} -C /
+	pkg add ${dssystem}
 }
 
 setup_inetd()
@@ -101,9 +101,6 @@ PG_main()
 	echo 'Settings up /etc/sysctl.conf'
 	setup_sysctl_conf
 
-	echo 'Installing Asigra'
-	#install_asigra
-
 	echo 'Settings up Inetd'
 	setup_inetd
 
@@ -153,6 +150,9 @@ DS_main()
 {
 	echo 'Setting up LDAP'
 	setup_ldap
+
+	echo 'Setting up Asigra'
+	setup_asigra
 }
 
 main()
