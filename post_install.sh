@@ -24,10 +24,6 @@ setup_rc_conf()
 
 	service sendmail onestop > /dev/null 2>&1
 
-	sysrc -if /etc/rc.conf cloned_interfaces="lo0"
-	sysrc -if /etc/rc.conf ifconfig_lo0="127.0.0.1/8"
-	service netif start lo0
-
 	#sysrc -if /etc/rc.conf sshd_enable="YES"
 }
 
