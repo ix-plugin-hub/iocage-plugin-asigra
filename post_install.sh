@@ -141,7 +141,7 @@ setup_asigra()
 	exit 1
 	fi
 
-	pkg add ${dssystem}
+	pkg add --force ${dssystem}
 }
 
 # When PG and DS are different jails, this will do a lot of
