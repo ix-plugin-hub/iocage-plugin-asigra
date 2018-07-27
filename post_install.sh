@@ -58,6 +58,7 @@ setup_postgresql()
 	pw groupadd -q -n pgsql
 	echo -n 'pgsql' | pw useradd -n pgsql -u 1001 -s /bin/sh -m \
 		-d /usr/local/pgsql -g pgsql -G wheel -c 'Database User' -H 0
+	rm -rf /usr/local/pgsql
 
 	service postgresql initdb
 
@@ -131,7 +132,7 @@ setup_ldap()
 setup_asigra()
 {
 	local dssystem="dssystem-14.0.txz"
-	local url="https://builds.ixsystems.com/ix-iso/john/asigra/Software/DS-System/FreeBSD"
+	local url="https://12.189.233.133/ix-iso/john/asigra/Software/DS-System/FreeBSD"
 
 	cd /root
 	fetch -v ${url}/${dssystem}
