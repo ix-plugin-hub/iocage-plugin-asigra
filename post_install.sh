@@ -146,3 +146,5 @@ main()
 	PG_main
 	DS_main
 }
+
+main;
