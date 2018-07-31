@@ -128,8 +128,11 @@ setup_ldap()
 
 setup_asigra()
 {
-	local dssystem="dssystem-14.0.txz"
-	local url="http://12.189.233.133/ix-iso/john/asigra/Software/DS-System/FreeBSD"
+	#local dssystem="dssystem-14.0.txz"
+	#local url="http://12.189.233.133/ix-iso/john/asigra/Software/DS-System/FreeBSD"
+
+	local dssystem="dssystem-14.0.0.1.txz"
+	local url="http://12.189.233.133/ix-iso/john"
 
 	cd /root
 	fetch -v ${url}/${dssystem}
