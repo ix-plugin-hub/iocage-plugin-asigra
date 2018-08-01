@@ -151,13 +151,13 @@ setup_asigra()
 
 	service dssystem start
 
-	fetch -v "${url}/${dsoperator}"
-	if [ "$?" != "0" ]; then
-		echo "ERROR: Failed fetching ${dsoperator}"
-		exit 1
-	fi
+	#fetch -v "${url}/${dsoperator}"
+	#if [ "$?" != "0" ]; then
+	#	echo "ERROR: Failed fetching ${dsoperator}"
+	#	exit 1
+	#fi
 
-	unzip "${dsoperator}"
+	#unzip "${dsoperator}"
 }
 
 # When PG and DS are different jails, this will do a lot of
