@@ -135,7 +135,8 @@ setup_asigra()
 	local dsoperator="DS-Operator.zip"
 	local url="http://12.189.233.133/ix-iso/john"
 
-	cd /root
+	mkdir -p /root/downloads
+	cd /root/downloads
 
 	fetch -v "${url}/${dssystem}"
 	if [ "$?" != "0" ]; then
