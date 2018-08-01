@@ -156,7 +156,7 @@ setup_asigra()
 		exit 1
 	fi
 
-	unzip "${url}/${dsoperator}"
+	unzip "${dsoperator}"
 }
 
 # When PG and DS are different jails, this will do a lot of
