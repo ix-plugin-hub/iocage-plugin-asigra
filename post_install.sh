@@ -99,29 +99,29 @@ setup_ldap()
 	local nss_switch=/etc/nsswitch.conf
 	local dss_pam=/usr/local/etc/pam.d/dssystem
 
-	echo Adding $(hostname) hostname to to hosts
+	echo "Adding $(hostname) hostname to to hosts"
 	if ! grep -q "127.0.0.1 $(hostname)" /etc/hosts;
 	then
 		echo "127.0.0.1 $(hostname)" >> /etc/hosts
 	fi
 
-	sed -i.bak s/'group: compat'/'group: files ldap'/g ${nss_switch}
-	sed -i.bak s/'passwd: compat'/'passwd: files ldap'/g ${nss_switch}
+	sed -i.bak s/'group: compat'/'group: files ldap'/g "${nss_switch}"
+	sed -i.bak s/'passwd: compat'/'passwd: files ldap'/g "${nss_switch}"
 
 	echo -n "Setting up LDAP client..."
-	echo "BASE      dc=cdpa,dc=com" > ${openldap_conf}
-	echo "URI       ldap://127.0.0.1" >> ${openldap_conf}
+	echo "BASE      dc=cdpa,dc=com" > "${openldap_conf}"
+	echo "URI       ldap://127.0.0.1" >> "${openldap_conf}"
 
-	cp ${openldap_conf} ${etc_ldap_conf}
+	cp "${openldap_conf}" "${etc_ldap_conf}"
 
-	echo "pam_login_attribute uid" >> ${etc_ldap_conf}
-	cp ${openldap_conf} ${nss_ldap}
+	echo "pam_login_attribute uid" >> "${etc_ldap_conf}"
+	cp "${openldap_conf}" "${nss_ldap}"
 
-	chown root:wheel ${openldap_conf}
-	chown root:wheel ${etc_ldap_conf}
-	chown root:wheel ${nss_ldap}
-	chown root:wheel ${nss_switch}
-	chown root:wheel ${dss_pam}
+	chown root:wheel "${openldap_conf}"
+	chown root:wheel "${etc_ldap_conf}"
+	chown root:wheel "${nss_ldap}"
+	chown root:wheel "${nss_switch}"
+	chown root:wheel "${dss_pam}"
 
 	service nsswitch restart
 }
@@ -132,10 +132,12 @@ setup_asigra()
 	#local url="http://12.189.233.133/ix-iso/john/asigra/Software/DS-System/FreeBSD"
 
 	local dssystem="dssystem-14.0.0.1.txz"
+	local dsoperator="DS-Operator.zip"
 	local url="http://12.189.233.133/ix-iso/john"
 
 	cd /root
-	fetch -v ${url}/${dssystem}
+
+	fetch -v "${url}/${dssystem}"
 	if [ "$?" != "0" ]; then
 		echo "ERROR: Failed fetching ${dssystem}"
 		exit 1
@@ -144,9 +146,17 @@ setup_asigra()
 	# In the 2 jail configuration, this is a host dataset shared by the 2 jails
 	mkdir /zdata
 
-	pkg add --force ${dssystem}
+	pkg add --force "${dssystem}"
 
 	service dssystem start
+
+	fetch -v "${url}/${dsoperator}"
+	if [ "$?" != "0" ]; then
+		echo "ERROR: Failed fetching ${dsoperator}"
+		exit 1
+	fi
+
+	unzip "${url}/${dsoperator}"
 }
 
 # When PG and DS are different jails, this will do a lot of
