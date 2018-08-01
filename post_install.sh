@@ -132,11 +132,9 @@ setup_asigra()
 	#local url="http://12.189.233.133/ix-iso/john/asigra/Software/DS-System/FreeBSD"
 
 	local dssystem="dssystem-14.0.0.1.txz"
-	local dsoperator="DS-Operator.zip"
 	local url="http://12.189.233.133/ix-iso/john"
 
-	mkdir -p /root/downloads
-	cd /root/downloads
+	cd /root
 
 	fetch -v "${url}/${dssystem}"
 	if [ "$?" != "0" ]; then
@@ -150,14 +148,6 @@ setup_asigra()
 	pkg add --force "${dssystem}"
 
 	service dssystem start
-
-	#fetch -v "${url}/${dsoperator}"
-	#if [ "$?" != "0" ]; then
-	#	echo "ERROR: Failed fetching ${dsoperator}"
-	#	exit 1
-	#fi
-
-	#unzip "${dsoperator}"
 }
 
 # When PG and DS are different jails, this will do a lot of
