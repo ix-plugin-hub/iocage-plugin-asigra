@@ -128,9 +128,6 @@ setup_ldap()
 
 setup_asigra()
 {
-	#local dssystem="dssystem-14.0.txz"
-	#local url="http://12.189.233.133/ix-iso/john/asigra/Software/DS-System/FreeBSD"
-
 	local dssystem="dssystem-14.0.0.1.txz"
 	local url="http://12.189.233.133/ix-iso/john"
 
@@ -145,9 +142,9 @@ setup_asigra()
 	# In the 2 jail configuration, this is a host dataset shared by the 2 jails
 	mkdir /zdata
 
-	pkg add --force "${dssystem}"
+	#pkg add --force "${dssystem}"
 
-	service dssystem start
+	#service dssystem start
 }
 
 # When PG and DS are different jails, this will do a lot of
