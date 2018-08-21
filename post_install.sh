@@ -142,9 +142,9 @@ setup_asigra()
 	# In the 2 jail configuration, this is a host dataset shared by the 2 jails
 	mkdir /zdata
 
-	#pkg add --force "${dssystem}"
+	pkg add --force "${dssystem}"
 
-	#service dssystem start
+	service dssystem start
 }
 
 # When PG and DS are different jails, this will do a lot of
