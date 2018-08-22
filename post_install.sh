@@ -152,6 +152,7 @@ setup_nginx()
 	local dsoperator="DS-Operator_FreeBSD_14_0_0_1.zip"
 	local url="http://12.189.233.133/ix-iso/john"
 	local wwwpath="/usr/local/www/asigra"
+	local ip="$(echo "${IOCAGE_PLUGIN_IP}"|cut -f1 -d,)"
 
 	cd /root
 
@@ -164,7 +165,7 @@ setup_nginx()
 	mkdir -p "${wwwpath}"
 	unzip "${dsoperator}" -d "${wwwpath}"
 
-	echo XXXXXXXX $IOCAGE_PLUGIN_IP
+	sed -i.bak -E "/listen[[:blank:]]+80/${ip}:80/" /usr/local/etc/nginx/nginx.conf
 
 	sysrc -f /etc/rc.conf nginx_enable="YES"
 
