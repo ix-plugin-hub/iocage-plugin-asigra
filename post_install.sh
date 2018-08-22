@@ -186,6 +186,11 @@ fix_etc_hosts()
 	rm -f /etc/hosts.bak
 }
 
+set_root_password()
+{
+	echo -n 'root' | pw usermod root -m -H 0
+}
+
 # When PG and DS are different jails, this will do a lot of
 # similar setup as PG_main() does. For now, just do what isn't
 # done in PG_main().
@@ -202,6 +207,9 @@ DS_main()
 
 	echo 'Settings up Nginx'
 	setup_nginx
+
+	echo 'Setting root password'
+	set_root_password
 }
 
 main()
