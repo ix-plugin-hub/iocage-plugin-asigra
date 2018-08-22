@@ -179,6 +179,12 @@ setup_nginx()
 	service nginx start
 }
 
+fix_etc_hosts()
+{
+	sed -i.bak -E 's/^([0-9.]+),.+[[:space:]]+(.+)/\1 \2/' /etc/hosts
+	rm -f /etc/hosts.bak
+}
+
 # When PG and DS are different jails, this will do a lot of
 # similar setup as PG_main() does. For now, just do what isn't
 # done in PG_main().
@@ -192,6 +198,9 @@ DS_main()
 
 	echo 'Settings up Nginx'
 	setup_nginx
+
+	echo 'Fixing up hosts file cuz Brandon'
+	fix_etc_hosts
 }
 
 main()
