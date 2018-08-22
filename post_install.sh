@@ -166,7 +166,7 @@ setup_nginx()
 	unzip "${dsoperator}" -d "${wwwpath}"
 
 	# Should fix this for IPv6 too
-	sed -i.bak -E "s/listen[[:blank:]]+80/listen $ip:80/" /usr/local/etc/nginx/nginx.conf
+	sed -i.bak -E "s/listen[[:blank:]]+80/listen $ip:8888/" /usr/local/etc/nginx/nginx.conf
 
 	sysrc -f /etc/rc.conf nginx_enable="YES"
 
