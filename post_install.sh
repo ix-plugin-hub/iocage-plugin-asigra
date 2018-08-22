@@ -164,7 +164,7 @@ setup_nginx()
 
 	mkdir -p "${wwwpath}"
 	unzip "${dsoperator}" -d "${wwwpath}"
-	sed -i.bak -E 's|codebase="(.+)"|codebase="http://$ip:8888/asigra/"|' /usr/local/www/asigra/DSOP.jnlp
+	sed -i.bak -E "s|codebase=\"(.+)\"|codebase=\"http://$ip:8888/asigra/\"|" /usr/local/www/asigra/DSOP.jnlp
 
 	# Should fix this for IPv6 too
 	sed -i.bak -E "s/listen[[:blank:]]+80/listen $ip:8888/" /usr/local/etc/nginx/nginx.conf
