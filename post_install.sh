@@ -147,6 +147,28 @@ setup_asigra()
 	service dssystem start
 }
 
+setup_nginx()
+{
+	local dsoperator="DS-Operator_FreeBSD_14_0_0_1.zip"
+	local url="http://12.189.233.133/ix-iso/john"
+	local www="/usr/local/www/asigra"
+
+	cd /root
+
+	fetch -v "${url}/${dsoperator}"
+	if [ "$?" != "0" ]; then
+		echo "ERROR: Failed fetching ${dsoperator}"
+		exit 1
+	fi
+
+	mkdir -p "${wwwpath}"
+	unzip "${dsoperator}" -d "${wwwpath}"
+
+	sysrc -f /etc/rc.conf nginx_enable="YES"
+
+	service nginx start
+}
+
 # When PG and DS are different jails, this will do a lot of
 # similar setup as PG_main() does. For now, just do what isn't
 # done in PG_main().
@@ -157,6 +179,9 @@ DS_main()
 
 	echo 'Setting up Asigra'
 	setup_asigra
+
+	echo 'Settings up Nginx'
+	setup_nginx
 }
 
 main()
