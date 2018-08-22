@@ -6,6 +6,7 @@ setup_inetd()
 
 	sed -i.bak -E 's/^#(echo[[:blank:]]+)/\1/g' /etc/inetd.conf
 	sed -i.bak -E 's/^run_rc_command.+/run_rc_command "$1" -a $DBIP/g' /etc/rc.d/inetd
+	rm -f /etc/rc.d/inetd.bak
 
 	service inetd start
 }
@@ -66,6 +67,7 @@ setup_postgresql()
 	then
 		sed -i.bak '/listen_addresses/s/#//' /usr/local/pgsql/data/postgresql.conf
 		sed -i.bak '/listen_addresses/s/localhost/*/' /usr/local/pgsql/data/postgresql.conf
+		rm -f /usr/local/pgsql/data/postgresql.conf.bak
 	fi
 
 	echo "host all all 127.0.0.0/24 trust" >> /usr/local/pgsql/data/pg_hba.conf
@@ -107,6 +109,7 @@ setup_ldap()
 
 	sed -i.bak s/'group: compat'/'group: files ldap'/g "${nss_switch}"
 	sed -i.bak s/'passwd: compat'/'passwd: files ldap'/g "${nss_switch}"
+	rm -f "${nss_switch}.bak"
 
 	echo -n "Setting up LDAP client..."
 	echo "BASE      dc=cdpa,dc=com" > "${openldap_conf}"
@@ -165,9 +168,11 @@ setup_nginx()
 	mkdir -p "${wwwpath}"
 	unzip "${dsoperator}" -d "${wwwpath}"
 	sed -i.bak -E "s|codebase=\"(.+)\"|codebase=\"http://$ip:8888/asigra/\"|" /usr/local/www/asigra/DSOP.jnlp
+	rm -f /usr/local/www/asigra/DSOP.jnlp.bak
 
 	# Should fix this for IPv6 too
 	sed -i.bak -E "s/listen[[:blank:]]+80/listen $ip:8888/" /usr/local/etc/nginx/nginx.conf
+	rm -f /usr/local/etc/nginx/nginx.conf.bak
 
 	sysrc -f /etc/rc.conf nginx_enable="YES"
 
