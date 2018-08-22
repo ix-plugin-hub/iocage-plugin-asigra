@@ -151,7 +151,7 @@ setup_nginx()
 {
 	local dsoperator="DS-Operator_FreeBSD_14_0_0_1.zip"
 	local url="http://12.189.233.133/ix-iso/john"
-	local www="/usr/local/www/asigra"
+	local wwwpath="/usr/local/www/asigra"
 
 	cd /root
 
