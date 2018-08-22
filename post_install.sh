@@ -164,7 +164,7 @@ setup_nginx()
 	mkdir -p "${wwwpath}"
 	unzip "${dsoperator}" -d "${wwwpath}"
 
-	# IOCAGE_PLUGIN_IP
+	echo XXXXXXXX $IOCAGE_PLUGIN_IP
 
 	sysrc -f /etc/rc.conf nginx_enable="YES"
 
