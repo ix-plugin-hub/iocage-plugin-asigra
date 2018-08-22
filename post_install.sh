@@ -190,6 +190,9 @@ fix_etc_hosts()
 # done in PG_main().
 DS_main()
 {
+	echo 'Fixing up hosts file cuz Brandon'
+	fix_etc_hosts
+
 	echo 'Setting up LDAP'
 	setup_ldap
 
@@ -198,9 +201,6 @@ DS_main()
 
 	echo 'Settings up Nginx'
 	setup_nginx
-
-	echo 'Fixing up hosts file cuz Brandon'
-	fix_etc_hosts
 }
 
 main()
