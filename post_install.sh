@@ -107,8 +107,8 @@ setup_ldap()
 		echo "127.0.0.1 $(hostname)" >> /etc/hosts
 	fi
 
-	sed -i.bak s/'group: compat'/'group: files ldap'/g "${nss_switch}"
-	sed -i.bak s/'passwd: compat'/'passwd: files ldap'/g "${nss_switch}"
+	sed -i.bak -E s/'^group: compat'/'group: files ldap'/g "${nss_switch}"
+	sed -i.bak -E s/'^passwd: compat'/'passwd: files ldap'/g "${nss_switch}"
 	rm -f "${nss_switch}.bak"
 
 	echo -n "Setting up LDAP client..."
