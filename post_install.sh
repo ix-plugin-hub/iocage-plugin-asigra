@@ -115,7 +115,7 @@ setup_ldap()
 
 	echo -n "Setting up LDAP client..."
 	echo "BASE      dc=cdpa,dc=com" > "${openldap_conf}"
-	echo "URI       ldap://127.0.0.1" >> "${openldap_conf}"
+	echo "URI       ldap://${IOCAGE_PLUGIN_IP}" >> "${openldap_conf}"
 
 	cp "${openldap_conf}" "${etc_ldap_conf}"
 
@@ -211,6 +211,14 @@ DS_main()
 
 	echo 'Setting root password'
 	set_root_password
+
+	echo 'Setting up libdl.so.1 link'
+	setup_libdl
+}
+
+setup_libdl()
+{
+	ln -fs /lib/libc.so.7 /usr/local/lib/libdl.so.1
 }
 
 main()
