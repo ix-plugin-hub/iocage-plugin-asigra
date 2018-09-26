@@ -71,6 +71,7 @@ setup_postgresql()
 	fi
 
 	echo "host all all 127.0.0.0/24 trust" >> /usr/local/pgsql/data/pg_hba.conf
+	echo "host all all ${IOCAGE_PLUGIN_IP}/24 trust" >> /usr/local/pgsql/data/pg_hba.conf
 
 	service postgresql start
 }
