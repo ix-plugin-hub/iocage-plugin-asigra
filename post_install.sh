@@ -189,7 +189,7 @@ fix_etc_hosts()
 
 set_root_password()
 {
-	echo -n 'root' | pw usermod root -m -H 0
+	echo -n 'root' | pw usermod root -m -h 0
 }
 
 # When PG and DS are different jails, this will do a lot of
