@@ -173,7 +173,7 @@ setup_nginx()
 	rm -f /usr/local/www/asigra/DSOP.jnlp.bak
 
 	# Setup landing page
-	sed -i '' "s|index.html|asigra.html|g" /usr/local/etc/nginx.conf
+	sed -i '' "s|/usr/local/www/nginx;|/usr/local/www/asigra-landing;|g" /usr/local/etc/nginx/nginx.conf
 
 	sysrc -f /etc/rc.conf nginx_enable="YES"
 
