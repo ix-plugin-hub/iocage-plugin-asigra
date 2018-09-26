@@ -172,6 +172,9 @@ setup_nginx()
 	sed -i.bak -E "s|codebase=\"(.+)\"|codebase=\"http://$ip/asigra/\"|" /usr/local/www/asigra/DSOP.jnlp
 	rm -f /usr/local/www/asigra/DSOP.jnlp.bak
 
+	# Setup landing page
+	sed -i '' "s|index.html|asigra.html|g" /usr/local/etc/nginx.conf
+
 	sysrc -f /etc/rc.conf nginx_enable="YES"
 
 	service nginx start
