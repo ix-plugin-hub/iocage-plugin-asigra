@@ -25,7 +25,9 @@ setup_rc_conf()
 
 	service sendmail onestop > /dev/null 2>&1
 
-	#sysrc -if /etc/rc.conf sshd_enable="YES"
+	sysrc -if /etc/rc.conf sshd_enable="YES"
+	# Enable root login
+	sed -i '' 's|#PermitRootLogin no|PermitRootLogin yes|g' /etc/ssh/sshd_config
 }
 
 setup_make_conf()
