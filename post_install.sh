@@ -37,6 +37,9 @@ setup_ssh()
 
 	# Do the host key gen
 	service sshd keygen
+
+	# Start the sshd service on first install
+	service sshd start
 }
 
 setup_make_conf()
