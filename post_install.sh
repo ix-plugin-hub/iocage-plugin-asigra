@@ -25,9 +25,18 @@ setup_rc_conf()
 
 	service sendmail onestop > /dev/null 2>&1
 
+}
+
+setup_ssh()
+{
+	# Enable SSH
 	sysrc -if /etc/rc.conf sshd_enable="YES"
+
 	# Enable root login
 	sed -i '' 's|#PermitRootLogin no|PermitRootLogin yes|g' /etc/ssh/sshd_config
+
+	# Do the host key gen
+	service sshd keygen
 }
 
 setup_make_conf()
@@ -85,6 +94,9 @@ PG_main()
 
 	echo 'Settings up /etc/rc.conf'
 	setup_rc_conf
+
+	echo "Setting up SSH"
+	setup_ssh
 
 	echo 'Settings up /etc/sysctl.conf'
 	setup_sysctl_conf
