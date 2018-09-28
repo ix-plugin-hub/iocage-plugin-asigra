@@ -210,8 +210,8 @@ set_root_password()
 
 setup_local_dirs()
 {
-	echo "Creating /Upgrade directory"
-	mkdir /Upgrade
+	echo "Creating /zdata/Upgrade directory"
+	mkdir /zdata/Upgrade
 }
 
 # When PG and DS are different jails, this will do a lot of
