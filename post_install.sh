@@ -208,6 +208,12 @@ set_root_password()
 	echo -n 'root' | pw usermod root -m -h 0
 }
 
+setup_local_dirs()
+{
+	echo "Creating /Upgrade directory"
+	mkdir /Upgrade
+}
+
 # When PG and DS are different jails, this will do a lot of
 # similar setup as PG_main() does. For now, just do what isn't
 # done in PG_main().
@@ -230,6 +236,9 @@ DS_main()
 
 	echo 'Setting up libdl.so.1 link'
 	setup_libdl
+
+	echo 'Setting up local dirs'
+	setup_local_dirs
 }
 
 setup_libdl()
