@@ -1,255 +1,98 @@
 #!/bin/sh
+# Enable the service
+sysrc -f /etc/rc.conf inetd_enable="YES"
+sysrc -f /etc/rc.conf nsswitch_enable="YES"
+sysrc -f /etc/rc.conf postgresql_enable="YES"
+sysrc -f /etc/rc.conf postgresql_user="pgsql"
+sysrc -f /etc/rc.conf postgresql_data="/usr/local/pgsql/data"
+sysrc -f /etc/rc.conf nginx_enable="YES"
+sysrc -f /etc/rc.conf dssystem_enable="YES"
 
-setup_inetd()
-{
-	sysrc -f /etc/rc.conf inetd_enable="YES"
+sed -i.bak -E 's/^#(echo[[:blank:]]+)/\1/g' /etc/inetd.conf
+sed -i.bak -E 's/^run_rc_command.+/run_rc_command "$1" -a $DBIP/g' /etc/rc.d/inetd
+rm -f /etc/rc.d/inetd.bak
+service inetd start
 
-	sed -i.bak -E 's/^#(echo[[:blank:]]+)/\1/g' /etc/inetd.conf
-	sed -i.bak -E 's/^run_rc_command.+/run_rc_command "$1" -a $DBIP/g' /etc/rc.d/inetd
-	rm -f /etc/rc.d/inetd.bak
+#dsystems is looking for user/group pgsql
+pw groupadd -q -n pgsql
+echo -n 'pgsql' | pw useradd -n pgsql -u 1001 -s /bin/sh -m -d /usr/local/pgsql -g pgsql -G wheel -c 'Database User' -H 0
 
-	service inetd start
-}
+# Start the service
+service postgresql initdb
+service postgresql start
 
-setup_rc_conf()
-{
-	sysrc -if /etc/rc.conf network_interfaces=""
-	sysrc -if /etc/rc.conf rpcbind_enable="NO"
-	sysrc -if /etc/rc.conf cron_flags="$cron_flags -J 15"
-	sysrc -if /etc/rc.conf syslogd_flags="-ss"
+USER="pgsql"
 
-	sysrc -if /etc/rc.conf sendmail_enable="NO"
-	sysrc -if /etc/rc.conf sendmail_submit_enable="NO"
-	sysrc -if /etc/rc.conf sendmail_outbound_enable="NO"
-	sysrc -if /etc/rc.conf sendmail_msp_queue_enable="NO"
+# Save the config values
+echo "$DB" > /root/dbname
+echo "$USER" > /root/dbuser
+export LC_ALL=C
+cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 > /root/dbpassword
+PASS=`cat /root/dbpassword`
 
-	service sendmail onestop > /dev/null 2>&1
+# create user git
+psql -d template1 -U pgsql -c "CREATE USER ${USER} CREATEDB SUPERUSER;"
 
-}
+# Set a password on the postgres account
+psql -d template1 -U pgsql -c "ALTER USER ${USER} WITH PASSWORD '${PASS}';"
 
-setup_ssh()
-{
-	# Enable SSH
-	sysrc -if /etc/rc.conf sshd_enable="YES"
+# Fix permission for postgres
+echo "listen_addresses = '*'" >> /usr/local/pgsql/data/postgresql.conf
+echo "host  all  all 0.0.0.0/0 md5" >> /usr/local/pgsql/data/pg_hba.conf
 
-	# Enable root login
-	sed -i '' 's|#PermitRootLogin no|PermitRootLogin yes|g' /etc/ssh/sshd_config
+# Restart postgresql after config change
+service postgresql restart
 
-	# Do the host key gen
-	service sshd keygen
+Echo "Figure out our Network IP"
+#Very Dirty Hack to get the ip for dhcp, the problem is that IOCAGE_PLUGIN_IP doesent work on DCHP clients
+cat /var/db/dhclient.leases* | grep fixed-address | uniq | cut -d " " -f4 | cut -d ";" -f1 > /root/dhcpip
+IP=`cat /root/dhcpip`
 
-	# Start the sshd service on first install
-	service sshd start
-}
+echo "Set root password..."
+echo -n 'root' | pw usermod root -m -h 0
 
-setup_make_conf()
-{
-	cat <<-__EOF__>> /etc/make.conf
-	KDIRPREFIX=    /var/ports
-	DISTDIR=       /var/ports/distfiles
-	PACKAGES=      /var/ports/packages
-	INDEXDIR=      /var/ports
-__EOF__
-}
+echo "Set Hostname..."
+echo "127.0.0.1 $(hostname)" >> /etc/hosts
 
-setup_sysctl_conf()
-{
-	cat <<-__EOF__ >> /etc/sysctl.conf
-	security.jail.sysvipc_allowed=1
-	security.jail.allow_raw_sockets=1
-__EOF__
-}
+echo "Setup LDAP.."
+echo "BASE      dc=cdpa,dc=com" > /usr/local/etc/openldap/ldap.conf
+echo "URI       ldap://$IP" >> /usr/local/etc/openldap/ldap.conf
+cp  /usr/local/etc/openldap/ldap.conf /usr/local/etc/ldap.conf
+echo "pam_login_attribute uid" >> /usr/local/etc/ldap.conf
+cp  /usr/local/etc/openldap/ldap.conf /etc/nsswitch.conf
 
-setup_postgresql()
-{
-	sysrc -if /etc/rc.conf postgresql_enable="YES"
-	sysrc -if /etc/rc.conf postgresql_data="/usr/local/pgsql/data"
-	sysrc -if /etc/rc.conf postgresql_user="pgsql"
+echo "Setup DB Username"
+sed -i '' "s|pg_user=|pg_user=${USER}|g" /root/dssystem_install.ini
+echo "Setup DB Password"
+sed -i '' "s|pg_pass=|pg_pass=${PASS}|g" /root/dssystem_install.ini
 
-	pw groupdel -q -n postgres
-	pw userdel -q -n postgres
+echo "Creating /zdata/Upgrade directory"
+mkdir /zdata/Upgrade
 
-	pw groupadd -q -n pgsql
-	echo -n 'pgsql' | pw useradd -n pgsql -u 1001 -s /bin/sh -m \
-		-d /usr/local/pgsql -g pgsql -G wheel -c 'Database User' -H 0
+echo "Fix Libc"
+ln -fs /lib/libc.so.7 /usr/local/lib/libdl.so.1
 
-	service postgresql initdb
+echo "Download Distfiles"
+cd /root
+fetch http://builds.ixsystems.com/ix-iso/john/DS-Operator_FreeBSD_14_0_0_1.zip
+fetch http://builds.ixsystems.com/ix-iso/john/dssystem-14.0.0.1.txz
 
-	chown -R pgsql:pgsql /usr/local/pgsql
+echo "Install dssystem"
+pkg add  /root/dssystem-14.0.0.1.txz
 
-	if grep -q '#listen_addresses' /usr/local/pgsql/data/postgresql.conf;
-	then
-		sed -i.bak '/listen_addresses/s/#//' /usr/local/pgsql/data/postgresql.conf
-		sed -i.bak '/listen_addresses/s/localhost/*/' /usr/local/pgsql/data/postgresql.conf
-		rm -f /usr/local/pgsql/data/postgresql.conf.bak
-	fi
+echo "Prepare DS Operator"
+mkdir -p /usr/local/www/asigra
+unzip DS-Operator_FreeBSD_14_0_0_1.zip -d /usr/local/www/asigra
 
-	echo "host all all 127.0.0.0/24 trust" >> /usr/local/pgsql/data/pg_hba.conf
-	echo "host all all ${IOCAGE_PLUGIN_IP}/24 trust" >> /usr/local/pgsql/data/pg_hba.conf
+sed -i.bak -E "s|codebase=\"(.+)\"|codebase=\"http://$IP/asigra/\"|" /usr/local/www/asigra/DSOP.jnlp
+rm -f /usr/local/www/asigra/DSOP.jnlp.bak
 
-	service postgresql start
-}
-
-PG_main()
-{
-	echo 'Settings up /etc/make.conf'
-	setup_make_conf
-
-	echo 'Settings up /etc/rc.conf'
-	setup_rc_conf
-
-	echo "Setting up SSH"
-	setup_ssh
-
-	echo 'Settings up /etc/sysctl.conf'
-	setup_sysctl_conf
-
-	echo 'Settings up Inetd'
-	setup_inetd
-
-	echo 'Setting up PostgreSQL'
-	setup_postgresql
-}
-
-setup_ldap()
-{
-	local openldap_conf=/usr/local/etc/openldap/ldap.conf
-	local etc_ldap_conf=/usr/local/etc/ldap.conf
-	local nss_ldap=/usr/local/etc/nss_ldap.conf
-	local nss_switch=/etc/nsswitch.conf
-	local dss_pam=/usr/local/etc/pam.d/dssystem
-
-	echo "Adding $(hostname) hostname to to hosts"
-	if ! grep -q "127.0.0.1 $(hostname)" /etc/hosts;
-	then
-		echo "127.0.0.1 $(hostname)" >> /etc/hosts
-	fi
-
-	# XXX Skip this for now since it isn't configured XXX
-	#sed -i.bak -E s/'^group: compat'/'group: files ldap'/g "${nss_switch}"
-	#sed -i.bak -E s/'^passwd: compat'/'passwd: files ldap'/g "${nss_switch}"
-	#rm -f "${nss_switch}.bak"
-
-	echo -n "Setting up LDAP client..."
-	echo "BASE      dc=cdpa,dc=com" > "${openldap_conf}"
-	echo "URI       ldap://${IOCAGE_PLUGIN_IP}" >> "${openldap_conf}"
-
-	cp "${openldap_conf}" "${etc_ldap_conf}"
-
-	echo "pam_login_attribute uid" >> "${etc_ldap_conf}"
-	cp "${openldap_conf}" "${nss_ldap}"
-
-	chown root:wheel "${openldap_conf}"
-	chown root:wheel "${etc_ldap_conf}"
-	chown root:wheel "${nss_ldap}"
-	chown root:wheel "${nss_switch}"
-	chown root:wheel "${dss_pam}"
-
-	service nsswitch restart
-}
-
-setup_asigra()
-{
-	local dssystem="dssystem-14.0.0.1.txz"
-	local url="http://builds.ixsystems.com/ix-iso/john"
-
-	cd /root
-
-	fetch -v "${url}/${dssystem}"
-	if [ "$?" != "0" ]; then
-		echo "ERROR: Failed fetching ${dssystem}"
-		exit 1
-	fi
-
-	# In the 2 jail configuration, this is a host dataset shared by the 2 jails
-	mkdir /zdata
-
-	pkg add --force "${dssystem}"
-
-	service dssystem start
-}
-
-setup_nginx()
-{
-	local dsoperator="DS-Operator_FreeBSD_14_0_0_1.zip"
-	local url="http://12.189.233.133/ix-iso/john"
-	local wwwpath="/usr/local/www/asigra"
-	local ip="$(echo "${IOCAGE_PLUGIN_IP}"|cut -f1 -d,)"
-
-	cd /root
-
-	fetch -v "${url}/${dsoperator}"
-	if [ "$?" != "0" ]; then
-		echo "ERROR: Failed fetching ${dsoperator}"
-		exit 1
-	fi
-
-	mkdir -p "${wwwpath}"
-	unzip "${dsoperator}" -d "${wwwpath}"
-	sed -i.bak -E "s|codebase=\"(.+)\"|codebase=\"http://$ip/asigra/\"|" /usr/local/www/asigra/DSOP.jnlp
-	rm -f /usr/local/www/asigra/DSOP.jnlp.bak
-
-	# Setup landing page
-	sed -i '' "s|/usr/local/www/nginx;|/usr/local/www/asigra-landing;|g" /usr/local/etc/nginx/nginx.conf
-
-	sysrc -f /etc/rc.conf nginx_enable="YES"
-
-	service nginx start
-}
-
-fix_etc_hosts()
-{
-	sed -i.bak -E 's/^([0-9.]+),.+[[:space:]]+(.+)/\1 \2/' /etc/hosts
-	rm -f /etc/hosts.bak
-}
-
-set_root_password()
-{
-	echo -n 'root' | pw usermod root -m -h 0
-}
-
-setup_local_dirs()
-{
-	echo "Creating /zdata/Upgrade directory"
-	mkdir /zdata/Upgrade
-}
-
-# When PG and DS are different jails, this will do a lot of
-# similar setup as PG_main() does. For now, just do what isn't
-# done in PG_main().
-DS_main()
-{
-	echo 'Fixing up hosts file cuz Brandon'
-	fix_etc_hosts
-
-	echo 'Setting up LDAP'
-	setup_ldap
-
-	echo 'Setting up Asigra'
-	setup_asigra
-
-	echo 'Settings up Nginx'
-	setup_nginx
-
-	echo 'Setting root password'
-	set_root_password
-
-	echo 'Setting up libdl.so.1 link'
-	setup_libdl
-
-	echo 'Setting up local dirs'
-	setup_local_dirs
-}
-
-setup_libdl()
-{
-	ln -fs /lib/libc.so.7 /usr/local/lib/libdl.so.1
-}
-
-main()
-{
-	PG_main
-	DS_main
-}
-
-main;
+#make sure we have all services started
+echo "Restart inetd ..."
+/etc/rc.d/inetd restart
+echo "Restart nsswitch ..."
+/etc/rc.d/nsswitch restart
+echo "Restart dssystem..."
+/usr/local/etc/rc.d/dssystem restart
+echo "Restart nginx..."
+/usr/local/etc/rc.d/nginx restart
