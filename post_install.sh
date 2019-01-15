@@ -67,7 +67,7 @@ echo "Setup DB Password"
 sed -i '' "s|pg_pass=|pg_pass=${PASS}|g" /root/dssystem_install.ini
 
 echo "Creating /zdata/Upgrade directory"
-mkdir /zdata/Upgrade
+mkdir -p /zdata/Upgrade
 
 echo "Fix Libc"
 ln -fs /lib/libc.so.7 /usr/local/lib/libdl.so.1
