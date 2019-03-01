@@ -75,15 +75,15 @@ ln -fs /lib/libc.so.7 /usr/local/lib/libdl.so.1
 
 echo "Download Distfiles"
 cd /root
-fetch http://builds.ixsystems.com/ix-iso/john/DS-Operator_FreeBSD_14_0_0_1.zip
-fetch http://builds.ixsystems.com/ix-iso/john/dssystem-14.0.0.1.txz
+fetch http://builds.ixsystems.com/ix-iso/asigra/14.1/DS-Operator.zip
+fetch http://builds.ixsystems.com/ix-iso/asigra/14.1/dssystem-14.1.txz
 
 echo "Install dssystem"
-pkg add  /root/dssystem-14.0.0.1.txz
+pkg add  /root/dssystem-14.1.txz
 
 echo "Prepare DS Operator"
 mkdir -p /usr/local/www/asigra
-unzip DS-Operator_FreeBSD_14_0_0_1.zip -d /usr/local/www/asigra
+unzip DS-Operator.zip -d /usr/local/www/asigra
 
 sed -i.bak -E "s|codebase=\"(.+)\"|codebase=\"http://$IP/asigra/\"|" /usr/local/www/asigra/DSOP.jnlp
 rm -f /usr/local/www/asigra/DSOP.jnlp.bak
