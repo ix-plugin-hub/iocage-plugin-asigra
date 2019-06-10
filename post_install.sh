@@ -78,8 +78,8 @@ ln -fs /lib/libc.so.7 /usr/local/lib/libdl.so.1
 
 echo "Download Distfiles"
 cd /root
-fetch http://builds.ixsystems.com/ix-iso/asigra/14.1-20190301/DS-Operator.zip
-fetch http://builds.ixsystems.com/ix-iso/asigra/14.1-20190301/dssystem-14.1.txz
+fetch https://asigra-f611.kxcdn.com/14.1/latest/DS-Operator.zip
+fetch https://asigra-f611.kxcdn.com/14.1/latest/dssystem-14.1.txz
 
 echo "Install dssystem"
 pkg add  /root/dssystem-14.1.txz
