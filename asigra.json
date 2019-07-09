@@ -1,20 +1,14 @@
 {
   "name": "asigra",
   "release": "11.2-RELEASE",
-  "artifact": "/home/john/src/iocage-plugin-asigra",
+  "artifact": "https://github.com/miwi-fbsd/iocage-plugin-asigra.git",
   "pkgs": [
-	"ca_root_nss",
-	"gettext-runtime",
-	"icu",
-	"indexinfo",
-	"libxml2",
-	"nss_ldap",
-	"openldap-client",
-	"pam_ldap",
-	"lang/perl5.26",
-	"postgresql96-client",
-	"postgresql96-server",
-	"nginx"
+        "ca_root_nss",
+        "nss_ldap",
+        "pam_ldap",
+        "nginx",
+		"dsoperator",
+		"dssystem"
   ],
   "properties": {
 	"mount_devfs": "1",
@@ -27,7 +21,7 @@
 	"sysvsem": "new",
 	"sysvshm": "new"
   },
-  "packagesite": "http://pkg.cdn.trueos.org/iocage",
+  "packagesite": "http://pkg.cdn.trueos.org/iocage/unstable",
   "fingerprints": {
 	  "iocage-plugins": [
 		  {
