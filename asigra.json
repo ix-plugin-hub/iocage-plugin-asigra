@@ -3,10 +3,10 @@
   "release": "11.2-RELEASE",
   "artifact": "https://github.com/miwi-fbsd/iocage-plugin-asigra.git",
   "pkgs": [
-        "ca_root_nss",
-        "nss_ldap",
-        "pam_ldap",
-        "nginx",
+		"ca_root_nss",
+		"nss_ldap",
+		"pam_ldap",
+		"nginx",
 		"dsoperator",
 		"dssystem"
   ],
