@@ -12,7 +12,7 @@
 		"pam_ldap",
 		"nginx",
 		"dsoperator",
-		"dssystem96"
+		"dssystem"
   ],
   "properties": {
 	"mount_devfs": "1",
