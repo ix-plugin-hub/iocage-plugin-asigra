@@ -5,8 +5,14 @@ PG_CLIENT="/usr/local/bin/psql"
 PG_HOST="/tmp"
 DEST_DIR="/usr/local/ds-system"
 
+echo "before starting postgres"
+service dssystem status
+
 echo "Starting Postgresql"
 service postgresql start
+
+echo "After postgres"
+service dssystem status
 
 echo "Updating database"
 
@@ -29,3 +35,5 @@ if [ -n "`${PG_CLIENT} -U ${USER} -h ${PG_HOST} -l -d template1  | grep dssystem
 else
 	echo "dssystem database not found"
 fi
+echo "End of post upgrade"
+service dssystem status
