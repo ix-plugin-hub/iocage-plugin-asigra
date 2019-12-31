@@ -33,8 +33,7 @@ export LC_ALL=C
 cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1 > /root/dbpassword
 PASS=`cat /root/dbpassword`
 
-# create user git
-psql -d template1 -U pgsql -c "CREATE USER ${USER} CREATEDB SUPERUSER;"
+# We donot create user pgsql here because initdb above takes care of that, so we only set the password to the one we desire
 
 # Set a password on the postgres account
 psql -d template1 -U pgsql -c "ALTER USER ${USER} WITH PASSWORD '${PASS}';"
@@ -71,7 +70,7 @@ echo "Database Setup"
 # Restart postgresql after config change
 service postgresql restart
 
-Echo "Figure out our Network IP"
+echo "Figure out our Network IP"
 #Very Dirty Hack to get the ip for dhcp, the problem is that IOCAGE_PLUGIN_IP doesent work on DCHP clients
 #cat /var/db/dhclient.leases* | grep fixed-address | uniq | cut -d " " -f4 | cut -d ";" -f1 > /root/dhcpip
 #netstat -nr | grep lo0 | awk '{print $1}' | uniq | cut -d " " -f4 | cut -d ";" -f1 > /root/dhcpip
