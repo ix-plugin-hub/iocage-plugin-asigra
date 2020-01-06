@@ -5,6 +5,7 @@ sysrc -f /etc/rc.conf nsswitch_enable="YES"
 sysrc -f /etc/rc.conf postgresql_enable="YES"
 sysrc -f /etc/rc.conf postgresql_user="pgsql"
 sysrc -f /etc/rc.conf postgresql_data="/usr/local/pgsql/data"
+sysrc -f /etc/rc.conf postgresql_initdb_flags="-A trust --encoding=utf-8 --lc-collate=C"
 sysrc -f /etc/rc.conf nginx_enable="YES"
 sysrc -f /etc/rc.conf dssystem_enable="YES"
 
