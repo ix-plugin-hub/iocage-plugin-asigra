@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Initialising db"
+echo "Initializing db"
 service postgresql initdb
 
 echo "Starting postgresql"
@@ -13,7 +13,7 @@ DEST_DIR="/usr/local/ds-system"
 PASS=`cat /root/dbpassword`
 DUMP_FILE_PATH="/tmp/update_dump"
 
-export LC_ALL=C
+export LC_ALL=en_US.UTF-8
 
 # Set a password on the postgres account
 psql -d template1 -U ${USER} -c "ALTER USER ${USER} WITH PASSWORD '${PASS}';"
