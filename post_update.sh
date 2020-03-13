@@ -31,4 +31,5 @@ if [ $? = 0 ]; then
 	rm -f ${DUMP_FILE_PATH}
 else
 	echo "Not removing ${DUMP_FILE_PATH} as restore command returned non-zero exit status" | tee -a /var/log/messages
+	exit 1
 fi
