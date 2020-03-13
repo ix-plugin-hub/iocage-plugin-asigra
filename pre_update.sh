@@ -18,4 +18,4 @@ service postgresql stop
 echo "Removing postgresql data directory"
 # We do this as newer version of postgresql probably won't support the directory
 # initialised by an older version of postgresql
-rm -rf /usr/local/pgsql/data/* | true
+rm -rf /usr/local/pgsql/data/* || true
