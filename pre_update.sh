@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "Starting postgresql service"
+service postgresql start
+
 echo "Generating dump of postgresql"
 rm -f /tmp/update_dump
 pg_dump -U pgsql -d dssystem > /tmp/update_dump
