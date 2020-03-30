@@ -15,8 +15,8 @@ rm -f /etc/rc.d/inetd.bak
 service inetd start
 
 #dsystems is looking for user/group pgsql
-pw groupadd -q -n pgsql
-echo -n 'pgsql' | pw useradd -n pgsql -u 1001 -s /bin/sh -m -d /usr/local/pgsql -g pgsql -G wheel -c 'Database User' -H 0
+pw groupadd -q -n pgsql -g 769
+echo -n 'pgsql' | pw useradd -n pgsql -u 769 -s /bin/sh -m -d /usr/local/pgsql -g pgsql -G wheel -c 'Database User' -H 0
 
 # Start the service
 service postgresql initdb
